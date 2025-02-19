@@ -17,6 +17,7 @@ Usage for the example provider:
    keytool -importcert -storepass overrideme -alias ... -file ...crt -keystore src/main/liberty/config/customtruststore.p12 -noprompt
    ```
 3. Start Liberty with the necessary provider configuration:
+   
    `mvn -Dliberty.var.oidc.clientId=... -Dliberty.var.oidc.clientSecret=... -Dliberty.var.oidc.authorizationEndpointUrl=... -Dliberty.var.oidc.issuerIdentifier=... -Dliberty.var.oidc.jwkEndpointUrl=... -Dliberty.var.oidc.validationEndpointUrl=... -Dliberty.var.oidc.tokenEndpointUrl=... -Dliberty.var.testuser=... clean install liberty:run`
 4. Access <https://test.ibm.com:9443/>
 5. Enter the secure area to start the flow
