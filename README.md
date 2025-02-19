@@ -6,7 +6,7 @@ The `openidConnectClient` configuration in [server.xml](src/main/liberty/config/
 
 Usage for the example provider:
 
-1. Add to your local computer's hosts file; for example, to `/etc/hosts` on macOS/Linux (or `%WinDir%\System32\Drivers\Etc\hosts` on Windows):
+1. Add host name mappings to your local computer's hosts file; for example, to `/etc/hosts` on macOS/Linux (or `%WinDir%\System32\Drivers\Etc\hosts` on Windows):
    ```
    127.0.0.1 oidc.test.ibm.com test.ibm.com
    ```
