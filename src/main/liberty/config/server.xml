@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ (C) Copyright IBM Corporation 2025.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>transportSecurity-1.0</feature>
+        <feature>openidConnectClient-1.0</feature>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+    
+    <httpEndpoint host="*" httpPort="9080" httpsPort="9443" id="defaultHttpEndpoint" />
+
+    <!--
+        To enable TLS, in addition to the transportSecurity-1.0 feature,
+        either specify keystore_password in server.env or as an
+        environment variable, or specify a keystore element with an explicit
+        password (optionally encrypted):
+        https://openliberty.io/docs/latest/reference/feature/transportSecurity.html
+
+        We choose the latter for more flexibility. The value must be a minimum
+        of 6 characters (see CWPKI0808E).
+    -->
+    <variable name="keystore_password" defaultValue="changeme" />
+    <keyStore id="defaultKeyStore" password="${keystore_password}" />
+
+    <!-- Customized trust store for example OIDC provider -->
+    <variable name="truststore.password" defaultValue="overrideme" />
+    <sslDefault sslRef="DefaultSSLSettings" />
+    <ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" trustStoreRef="OIDCTrustStore" />
+    <keyStore id="OIDCTrustStore" password="${truststore.password}" type="PKCS12" location="${server.config.dir}/customtruststore.p12" />
+
+    <basicRegistry>
+        <user name="${testuser}" password="overrideme" />
+    </basicRegistry>
+
+    <virtualHost id="myvh">
+        <hostAlias>test.ibm.com:9443</hostAlias>
+    </virtualHost>
+
+    <openidConnectClient
+        id="LibertyOIDCClient"
+        clientId="${oidc.clientId}"
+        clientSecret="${oidc.clientSecret}"
+        authorizationEndpointUrl="${oidc.authorizationEndpointUrl}"
+        issuerIdentifier="${oidc.issuerIdentifier}"
+        jwkEndpointUrl="${oidc.jwkEndpointUrl}"
+        validationEndpointUrl="${oidc.validationEndpointUrl}"
+        tokenEndpointUrl="${oidc.tokenEndpointUrl}"
+        signatureAlgorithm="RS256"
+        mapIdentityToRegistryUser="true"
+        redirectToRPHostAndPort="https://oidc.test.ibm.com:9443/"
+    />
+
+    <webAppSecurity ssoDomainNames="test.ibm.com" wasReqURLRedirectDomainNames="test.ibm.com" ssoUseDomainFromURL="true" />
+
+    <webApplication location="helloworldoidc.war" contextRoot="/">
+        <application-bnd>
+            <security-role name="role1">
+                <user name="${testuser}" />
+            </security-role>
+        </application-bnd>
+        <web-bnd moduleName="Hello World JSP">
+            <virtual-host name="myvh" />
+        </web-bnd>
+    </webApplication>
+</server>

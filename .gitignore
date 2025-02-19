@@ -1,0 +1,7 @@
+/target
+.project
+.settings
+.classpath
+notes.txt
+src/main/liberty/config/customtruststore.p12
+
