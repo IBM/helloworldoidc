@@ -2,7 +2,7 @@
 
 This is an example application demonstrating [Liberty OIDC support](https://openliberty.io/docs/latest/reference/feature/openidConnectClient.html) with application virtual hosts.
 
-The `openidConnectClient` configuration in `server.xml` must be customized for your particular OIDC provider.
+The `openidConnectClient` configuration in [server.xml](src/main/liberty/config/server.xml) must be customized for your particular OIDC provider.
 
 Usage for the example provider:
 
